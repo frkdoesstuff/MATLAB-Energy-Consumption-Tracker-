@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>energy_tracker</title>
+<meta name="generator" content="MATLAB 26.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-10-04">
+<meta name="DC.source" content="energy_tracker.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<pre class="codeinput">appliances = [<span class="string">"Fridge"</span>,<span class="string">"AC"</span>,<span class="string">"Oven"</span>,<span class="string">"TV"</span>,<span class="string">"Washer"</span>];
+
+num_appliances = length(appliances);
+hours = 24;
+
+cost_rate = 0.15;
+daily_limit = 12;
+
+
+disp(<span class="string">'ENERGY_TRACKER'</span>);
+
+
+<span class="comment">% Predefined hourly energy data (24 x 5)</span>
+data = [
+0.8 1.2 0.0 0.5 0.0;
+0.8 1.0 0.0 0.4 0.0;
+0.7 0.9 0.0 0.3 0.0;
+0.7 0.8 0.0 0.2 0.0;
+0.8 1.5 0.0 0.3 0.0;
+0.9 2.0 1.5 0.5 0.0;
+1.0 2.5 1.8 0.6 0.2;
+1.0 2.8 1.2 0.5 0.5;
+0.9 2.5 0.5 0.4 0.3;
+0.8 2.2 0.0 0.3 0.0;
+0.8 1.8 0.0 0.4 0.0;
+0.9 2.0 1.0 0.6 0.0;
+1.0 2.4 1.3 0.7 0.4;
+1.0 2.7 1.6 0.8 0.5;
+0.9 2.9 1.2 0.6 0.3;
+0.8 2.6 0.8 0.5 0.0;
+0.9 3.0 1.7 0.9 0.6;
+1.0 3.2 2.0 1.0 0.8;
+0.9 2.8 1.5 0.8 0.5;
+0.8 2.4 1.0 0.7 0.3;
+0.8 2.0 0.5 0.6 0.2;
+0.7 1.8 0.0 0.5 0.0;
+0.7 1.5 0.0 0.4 0.0;
+0.8 1.2 0.0 0.3 0.0
+];
+
+<span class="comment">% Calculations</span>
+[totals, day_total, total_cost] = calculate(data, cost_rate);
+
+hourly_total = sum(data, 2);
+
+mean_hour = mean(hourly_total);
+max_hour = max(hourly_total);
+min_hour = min(hourly_total);
+
+<span class="comment">% Alert</span>
+<span class="keyword">if</span> day_total &gt; daily_limit
+    disp(<span class="string">'ALERT: Limit exceeded'</span>);
+<span class="keyword">else</span>
+    disp(<span class="string">'Usage within limit'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Report</span>
+<span class="comment">% Highest consuming appliance</span>
+[max_value, index] = max(totals);
+fprintf(<span class="string">'Highest Appliance: %s (%.2f kWh)\n'</span>, appliances(index), max_value);
+
+fprintf(<span class="string">'Daily Total Energy: %.2f kWh\n'</span>, day_total);
+fprintf(<span class="string">'Total Cost: &pound;%.2f\n'</span>, total_cost);
+fprintf(<span class="string">'Mean Hourly Usage: %.2f kWh\n'</span>, mean_hour);
+fprintf(<span class="string">'Max Hourly Usage: %.2f kWh\n'</span>, max_hour);
+fprintf(<span class="string">'Min Hourly Usage: %.2f kWh\n'</span>, min_hour);
+
+
+
+<span class="comment">% Print total energy usage for each appliance</span>
+<span class="keyword">for</span> i = 1:num_appliances
+    fprintf(<span class="string">'%s total usage: %.2f kWh\n'</span>, appliances(i), totals(i));
+<span class="keyword">end</span>
+
+<span class="comment">% Bar chart</span>
+figure
+bar(totals)
+xlabel(<span class="string">'Appliances'</span>)
+ylabel(<span class="string">'Total Energy Consumption (kWh)'</span>)
+title(<span class="string">'Energy Consumption per Appliance'</span>)
+xticks(1:num_appliances)
+xticklabels(appliances)
+
+<span class="comment">% Save report to file</span>
+fileID = fopen(<span class="string">'energy_report.txt'</span>,<span class="string">'w'</span>);
+
+<span class="keyword">if</span> fileID ~= -1
+    fprintf(fileID,<span class="string">'Daily Total Energy: %.2f kWh\n'</span>, day_total);
+    fprintf(fileID,<span class="string">'Total Cost: %.2f\n'</span>, total_cost);
+    fprintf(fileID, <span class="string">'Mean Hourly Usage: %.2f kWh\n'</span>, mean_hour);
+    fprintf(fileID, <span class="string">'Max Hourly Usage: %.2f kWh\n'</span>, max_hour);
+    fprintf(fileID, <span class="string">'Min Hourly Usage: %.2f kWh\n'</span>, min_hour);
+    fprintf(fileID, <span class="string">'Highest Appliance: %s (%.2f kWh)\n'</span>, appliances(index), max_value);
+
+    fclose(fileID);
+
+
+<span class="keyword">else</span>
+    disp(<span class="string">'Error opening file'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% Calculate energy totals and cost</span>
+
+<span class="keyword">function</span> [sums,total,cost] = calculate(matrix, rate)
+
+
+    sums = sum(matrix);
+    total = sum(sums);
+    cost = total * rate;
+<span class="keyword">end</span>
+</pre>
+<pre class="codeoutput">ENERGY_TRACKER
+ALERT: Limit exceeded
+Highest Appliance: AC (49.70 kWh)
+Daily Total Energy: 105.10 kWh
+Total Cost: &pound;15.76
+Mean Hourly Usage: 4.38 kWh
+Max Hourly Usage: 8.00 kWh
+Min Hourly Usage: 1.70 kWh
+Fridge total usage: 20.40 kWh
+AC total usage: 49.70 kWh
+Oven total usage: 17.60 kWh
+TV total usage: 12.80 kWh
+Washer total usage: 4.60 kWh
+</pre>
+<img vspace="5" hspace="5" src="energy_tracker_01.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2026a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+appliances = ["Fridge","AC","Oven","TV","Washer"];
+
+num_appliances = length(appliances);
+hours = 24;
+
+cost_rate = 0.15;
+daily_limit = 12;    
+
+
+disp('ENERGY_TRACKER');
+
+
+% Predefined hourly energy data (24 x 5)
+data = [
+0.8 1.2 0.0 0.5 0.0;
+0.8 1.0 0.0 0.4 0.0;
+0.7 0.9 0.0 0.3 0.0;
+0.7 0.8 0.0 0.2 0.0;
+0.8 1.5 0.0 0.3 0.0;
+0.9 2.0 1.5 0.5 0.0;
+1.0 2.5 1.8 0.6 0.2;
+1.0 2.8 1.2 0.5 0.5;
+0.9 2.5 0.5 0.4 0.3;
+0.8 2.2 0.0 0.3 0.0;
+0.8 1.8 0.0 0.4 0.0;
+0.9 2.0 1.0 0.6 0.0;
+1.0 2.4 1.3 0.7 0.4;
+1.0 2.7 1.6 0.8 0.5;
+0.9 2.9 1.2 0.6 0.3;
+0.8 2.6 0.8 0.5 0.0;
+0.9 3.0 1.7 0.9 0.6;
+1.0 3.2 2.0 1.0 0.8;
+0.9 2.8 1.5 0.8 0.5;
+0.8 2.4 1.0 0.7 0.3;
+0.8 2.0 0.5 0.6 0.2;
+0.7 1.8 0.0 0.5 0.0;
+0.7 1.5 0.0 0.4 0.0;
+0.8 1.2 0.0 0.3 0.0
+];
+
+% Calculations
+[totals, day_total, total_cost] = calculate(data, cost_rate);
+
+hourly_total = sum(data, 2);
+
+mean_hour = mean(hourly_total);
+max_hour = max(hourly_total);
+min_hour = min(hourly_total);
+
+% Alert
+if day_total > daily_limit
+    disp('ALERT: Limit exceeded');
+else
+    disp('Usage within limit');
+end
+
+% Report
+% Highest consuming appliance
+[max_value, index] = max(totals);
+fprintf('Highest Appliance: %s (%.2f kWh)\n', appliances(index), max_value);
+
+fprintf('Daily Total Energy: %.2f kWh\n', day_total);
+fprintf('Total Cost: £%.2f\n', total_cost);
+fprintf('Mean Hourly Usage: %.2f kWh\n', mean_hour);
+fprintf('Max Hourly Usage: %.2f kWh\n', max_hour);
+fprintf('Min Hourly Usage: %.2f kWh\n', min_hour);
+
+
+
+% Print total energy usage for each appliance
+for i = 1:num_appliances
+    fprintf('%s total usage: %.2f kWh\n', appliances(i), totals(i));
+end
+
+% Bar chart
+figure
+bar(totals)
+xlabel('Appliances')
+ylabel('Total Energy Consumption (kWh)')
+title('Energy Consumption per Appliance')
+xticks(1:num_appliances)
+xticklabels(appliances)
+
+% Save report to file
+fileID = fopen('energy_report.txt','w');
+
+if fileID ~= -1
+    fprintf(fileID,'Daily Total Energy: %.2f kWh\n', day_total);
+    fprintf(fileID,'Total Cost: %.2f\n', total_cost);
+    fprintf(fileID, 'Mean Hourly Usage: %.2f kWh\n', mean_hour);
+    fprintf(fileID, 'Max Hourly Usage: %.2f kWh\n', max_hour);
+    fprintf(fileID, 'Min Hourly Usage: %.2f kWh\n', min_hour);
+    fprintf(fileID, 'Highest Appliance: %s (%.2f kWh)\n', appliances(index), max_value);
+
+    fclose(fileID);
+
+
+else
+    disp('Error opening file');
+end
+
+
+% Calculate energy totals and cost
+
+function [sums,total,cost] = calculate(matrix, rate)
+
+
+    sums = sum(matrix);
+    total = sum(sums);
+    cost = total * rate;
+end
+
+##### SOURCE END #####
+-->
+</body>
+</html>
